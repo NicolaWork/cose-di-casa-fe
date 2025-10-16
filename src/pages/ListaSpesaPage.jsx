@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
-import { getOggetti } from "../api/mockApi.js"; // o apiClient.js se usi il BE
+import { getOggetti } from "../api/mockApi.js";
 import ListaSpesa from "../components/ListaSpesa.jsx";
 
 export default function ListaSpesaPage() {
   const [oggettiDisponibili, setOggettiDisponibili] = useState([]);
   const [listaSpesa, setListaSpesa] = useState([]);
   const [search, setSearch] = useState("");
+  const [suggestions, setSuggestions] = useState([]);
 
   useEffect(() => {
     fetchOggetti();
@@ -20,77 +21,94 @@ export default function ListaSpesaPage() {
     }
   };
 
-  const aggiungiOggetto = (oggetto) => {
-    // ✅ Evita duplicati
-    if (!listaSpesa.find((item) => item.id === oggetto.id)) {
-      setListaSpesa((prev) => [...prev, oggetto]);
+  const handleSearchChange = (e) => {
+    const value = e.target.value;
+    setSearch(value);
+
+    // 🔹 Mostra suggerimenti mentre digiti
+    if (value.trim().length > 0) {
+      const filtered = oggettiDisponibili.filter((o) =>
+        o.nome.toLowerCase().includes(value.toLowerCase())
+      );
+      setSuggestions(filtered.slice(0, 5)); // massimo 5 suggerimenti
+    } else {
+      setSuggestions([]);
     }
   };
 
+  const aggiungiOggetto = (oggetto) => {
+    if (!listaSpesa.find((item) => item.id === oggetto.id)) {
+      setListaSpesa((prev) => [...prev, oggetto]);
+    }
+    setSearch("");
+    setSuggestions([]);
+  };
+
+  const aggiungiOggettoManuale = () => {
+    if (!search.trim()) return;
+
+    // 🔸 Se l'oggetto digitato non esiste nella lista disponibile, crealo come "personalizzato"
+    const existing = oggettiDisponibili.find(
+      (o) => o.nome.toLowerCase() === search.toLowerCase()
+    );
+    const nuovoOggetto =
+      existing || { id: Date.now(), nome: search, categoria: "Altro" };
+
+    aggiungiOggetto(nuovoOggetto);
+  };
+
   const rimuoviOggetto = (id) => {
-    // ✅ Rimuove un oggetto dalla lista della spesa
     setListaSpesa((prev) => prev.filter((item) => item.id !== id));
   };
 
-  const oggettiFiltrati = oggettiDisponibili.filter(
-    (oggetto) => 
-      oggetto.nome.toLowerCase().includes(search.toLowerCase()) ||
-    oggetto.categoria.toLowerCase().includes(search.toLowerCase())
-  )  
-
   return (
-    <div>
-      <h2>Lista della Spesa</h2>
-      <div className="row mt-4">
-        {/* Colonna sinistra: oggetti disponibili */}
-        <div className="col-md-6">
-          <div className="card p-3">
-            <h5>Oggetti Disponibili</h5>
+    <div className="container py-5">
+      <h2 className="text-center mb-4">Lista della Spesa</h2>
 
-            {/* 🔍 Barra di ricerca */}
-            <div className="input-group mb-3">
-              <span className="input-group-text bg-white">
-                <i className="bi bi-search"></i>
-              </span>
-              <input 
-                type="text"
-                className="form-control"
-                placeholder="Cerca per nome o categoria"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                />
-              </div>
-
-            <ul className="list-group">
-              {oggettiFiltrati.length > 0 ? (
-              oggettiFiltrati.map((oggetto) => (
-                <li
-                  key={oggetto.id}
-                  className="list-group-item d-flex justify-content-between align-items-center"
-                >
-                  <span>
-                    {oggetto.nome} {" "}
-                    <em className="text-muted">({oggetto.categoria})</em>
-                  </span>
-                  <button
-                    className="btn btn-sm btn-success d-flex align-items-center gap-1"
-                    onClick={() => aggiungiOggetto(oggetto)}
-                    title="Aggiungi alla lista"
-                  >
-                    <i className="bi bi-cart-plus"></i>
-                  </button>
-                </li>
-              ))
-              ):(
-                <li className="list-group-item text-muted text-center">
-                  Nessun oggetto trovato
-                </li>
-              )}
-            </ul>
+      {/* 🔍 Barra di ricerca centrata */}
+      <div className="d-flex justify-content-center mb-4 position-relative">
+        <div style={{ width: "400px" }} className="position-relative">
+          <div className="input-group">
+            <input
+              type="text"
+              className="form-control"
+              placeholder="Cerca o aggiungi un oggetto..."
+              value={search}
+              onChange={handleSearchChange}
+            />
+            <button
+              className="btn btn-success"
+              onClick={aggiungiOggettoManuale}
+              disabled={!search.trim()}
+            >
+              <i className="bi bi-cart-plus"></i> Aggiungi
+            </button>
           </div>
-        </div>
 
-        {/* Colonna destra: lista della spesa */}
+          {/* 🔽 Dropdown suggerimenti */}
+          {suggestions.length > 0 && (
+            <ul
+              className="list-group position-absolute w-100 mt-1 shadow-sm"
+              style={{ zIndex: 10 }}
+            >
+              {suggestions.map((item) => (
+                <li
+                  key={item.id}
+                  className="list-group-item list-group-item-action"
+                  style={{ cursor: "pointer" }}
+                  onClick={() => aggiungiOggetto(item)}
+                >
+                  {item.nome}{" "}
+                  <small className="text-muted">({item.categoria})</small>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      </div>
+
+      {/* 🧾 Lista della spesa */}
+      <div className="row justify-content-center">
         <div className="col-md-6">
           <ListaSpesa lista={listaSpesa} onRemove={rimuoviOggetto} />
         </div>

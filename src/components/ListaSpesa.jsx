@@ -13,12 +13,12 @@ export default function ListaSpesa({ lista, onRemove }) {
               className="list-group-item d-flex justify-content-between align-items-center"
             >
               <span>
-                {item.nome} <em className="text-muted">({item.categoria})</em>
+                {item.nome}{" "}
+                <em className="text-muted">({item.categoria})</em>
               </span>
               <button
                 className="btn btn-sm btn-outline-danger d-flex align-items-center gap-1"
                 onClick={() => onRemove(item.id)}
-                title="Rimuovi"
               >
                 <i className="bi bi-trash"></i>
               </button>
