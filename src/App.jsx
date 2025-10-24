@@ -5,6 +5,7 @@ import GestioneOggetti from "./pages/GestioneOggetti.jsx";
 import ListaSpesaPage from "./pages/ListaSpesaPage.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import Layout from "./components/Layout.jsx";
+import Registrazione from "./pages/Registrazione.jsx";
 
 export default function App() {
   return (
@@ -12,6 +13,7 @@ export default function App() {
       <Routes>
         {/* 🔓 Login aperto a tutti */}
         <Route path="/" element={<Login />} />
+        <Route path="/register" element={<Registrazione /> } /> 
 
         {/* 🔒 Rotte protette */}
         <Route

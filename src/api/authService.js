@@ -1,23 +1,38 @@
-export const login = async (email, password) => {
-  // 🔹 Qui andrebbe la chiamata reale al backend
-  // POST /auth/login con email e password
-  // const res = await api.post("/auth/login", { email, password });
+import api from "./apiClient"
 
-  // Simulazione login per ora
-  if (email === "test@example.com" && password === "1234") {
-    localStorage.setItem("user", JSON.stringify({ email }));
+export const login = async (email, password) => {
+try {
+  const response = await api.post("/utente/login", { email, password });
+  
+  
+  const success = response.data === true;
+  
+  if(success){
+    localStorage.setItem("isLoggedIn","true");
+    localStorage.setItem("utenteEmail",email);
     return true;
+  }else{
+    throw new Error ("Credenziali non valide")
   }
-  return false;
+} catch (error){
+  console.error("Errore durante il login: ",error);
+  throw new Error(
+    error.response?.data?.message || "Errore durante la connessione al sever"
+  );
+}
 };
 
 export const logout = () => {
-  localStorage.removeItem("user");
+   localStorage.removeItem("isLoggedIn");
+  localStorage.removeItem("utenteEmail");
+};
+
+export const isAuthenticated = () => {
+  return localStorage.getItem("isLoggedIn") === "true";
 };
 
 export const getUser = () => {
-  const user = localStorage.getItem("user");
-  return user ? JSON.parse(user) : null;
+  const email = localStorage.getItem("utenteEmail");
+  if (!email) return null;
+  return { email };
 };
-
-export const isAuthenticated = () => !!getUser();

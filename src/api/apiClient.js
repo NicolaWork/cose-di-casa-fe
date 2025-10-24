@@ -1,12 +1,14 @@
-
-/*
 import axios from "axios";
 
-const API_BASE_URL = "http://localhost:8080/api"; // 👈 URL del backend Spring Boot
+const API_BASE_URL = "http://localhost:8080";
 
 const api = axios.create({
   baseURL: API_BASE_URL,
 });
+
+export default api;
+
+/*
 // 🔹 Oggetti Disponibili
 export const getOggetti = async () => {
   // GET /oggetti

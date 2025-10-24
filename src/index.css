@@ -3,3 +3,8 @@ body {
   background-repeat: repeat;
   background-color: #286870;
 }
+
+.list-group-item-action:hover {
+  background-color: #7a7c7e;
+  transition: background-color 0.2s;
+}
