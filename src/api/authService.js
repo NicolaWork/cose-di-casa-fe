@@ -5,10 +5,10 @@ try {
   const response = await api.post("/utente/login", { email, password });
   
   
-  const success = response.data === true;
+  const token = response.data.token;
   
-  if(success){
-    localStorage.setItem("isLoggedIn","true");
+  if(token){
+    localStorage.setItem("token","token");
     localStorage.setItem("utenteEmail",email);
     return true;
   }else{
@@ -23,12 +23,12 @@ try {
 };
 
 export const logout = () => {
-   localStorage.removeItem("isLoggedIn");
+   localStorage.removeItem("token");
   localStorage.removeItem("utenteEmail");
 };
 
 export const isAuthenticated = () => {
-  return localStorage.getItem("isLoggedIn") === "true";
+  return !!localStorage.getItem("token");
 };
 
 export const getUser = () => {

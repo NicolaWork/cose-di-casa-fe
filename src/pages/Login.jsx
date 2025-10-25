@@ -64,7 +64,7 @@ try{
           <span
             className="text-primary"
             style={{ cursor: "pointer" }}
-            onClick={() => navigate("/register")}>
+            onClick={() => navigate("/registrazione")}>
             Registrati
           </span>
         </p>

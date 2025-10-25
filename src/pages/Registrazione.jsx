@@ -93,7 +93,7 @@ export default function Register() {
             type="password"
             className="form-control"
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(e) => setPassword(e.target.value.trim())}
             required
           />
         </div>
@@ -104,7 +104,7 @@ export default function Register() {
             type="password"
             className="form-control"
             value={password2}
-            onChange={(e) => setPassword2(e.target.value)}
+            onChange={(e) => setPassword2(e.target.value.trim())}
             required
           />
         </div>

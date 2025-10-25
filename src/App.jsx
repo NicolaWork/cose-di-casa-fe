@@ -13,7 +13,7 @@ export default function App() {
       <Routes>
         {/* 🔓 Login aperto a tutti */}
         <Route path="/" element={<Login />} />
-        <Route path="/register" element={<Registrazione /> } /> 
+        <Route path="/registrazione" element={<Registrazione /> } /> 
 
         {/* 🔒 Rotte protette */}
         <Route
