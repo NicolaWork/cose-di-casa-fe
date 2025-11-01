@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getOggetti } from "../api/mockApi.js";
+import { getOggetti } from "../api/apiClient.js";
 import ListaSpesa from "../components/ListaSpesa.jsx";
 
 export default function ListaSpesaPage() {
@@ -15,7 +15,7 @@ export default function ListaSpesaPage() {
   const fetchOggetti = async () => {
     try {
       const res = await getOggetti();
-      setOggettiDisponibili(res.data);
+      setOggettiDisponibili(res.data.data);
     } catch (error) {
       console.error("Errore caricamento oggetti:", error);
     }

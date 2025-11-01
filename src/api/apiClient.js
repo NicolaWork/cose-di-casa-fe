@@ -7,40 +7,33 @@ const api = axios.create({
 });
 
 api.interceptors.request.use((config)=> {
-  const token = localStorage.getItem("jwt");
+  const token = localStorage.getItem("token");
   if(token){
     config.headers.Authorization = `Bearer ${token}`;
   }
   return config;
 })
 
-export default api;
+export const createProdotto = async (prodotto) => {
+  // POST /oggetti
+  return api.post("/prodotto/crea", prodotto);
+};
 
-/*
 // 🔹 Oggetti Disponibili
 export const getOggetti = async () => {
   // GET /oggetti
-  return api.get("/oggetti");
-};
-
-export const createOggetto = async (oggetto) => {
-  // POST /oggetti
-  return api.post("/oggetti", oggetto);
-};
-
-export const updateOggetto = async (id, oggetto) => {
-  // PUT /oggetti/{id}
-  return api.put(`/oggetti/${id}`, oggetto);
+  return api.get("/prodotto/getall");
 };
 
 export const deleteOggetto = async (id) => {
   // DELETE /oggetti/{id}
-  return api.delete(`/oggetti/${id}`);
+  return api.delete(`/prodotto/${id}`);
 };
 
-// 🔹 Categorie (se servono)
-export const getCategorie = async () => {
-  // GET /categorie
-  return api.get("/categorie");
+export const updateOggetto = async (id, oggetto) => {
+  // PUT /oggetti/{id}
+  return api.put(`/prodotto/update/${id}`, oggetto);
 };
-*/
+
+export default api;
+

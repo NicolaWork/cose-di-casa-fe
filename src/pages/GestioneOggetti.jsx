@@ -3,8 +3,7 @@ import OggettoForm from "../components/OggettoForm.jsx";
 
 
 // 🔸 IMPORTA MOCK invece dell'API reale
-// import { getOggetti, createOggetto, updateOggetto, deleteOggetto } from "../api/apiClient.js";
-import { getOggetti, createOggetto, updateOggetto, deleteOggetto } from "../api/mockApi.js";
+ import { getOggetti, createProdotto, deleteOggetto, updateOggetto } from "../api/apiClient.js";
 
 
 export default function GestioneOggetti() {
@@ -19,7 +18,7 @@ export default function GestioneOggetti() {
   const fetchOggetti = async () => {
     try {
       const res = await getOggetti(); // 👈 GET /oggetti
-      setOggetti(res.data);
+      setOggetti(res.data.data);
     } catch (error) {
       console.error("Errore nel caricamento oggetti:", error);
     }
@@ -27,10 +26,12 @@ export default function GestioneOggetti() {
 
   const handleSave = async (oggetto) => {
     try {
-      if (editingOggetto) {
-        await updateOggetto(editingOggetto.id, oggetto); // 👈 PUT /oggetti/{id}
+      if (editingOggetto) {        
+        await updateOggetto(editingOggetto.idProdotto, oggetto); // 👈 PUT /oggetti/{id}
+        console.log("updateOggetto", editingOggetto);
       } else {
-        await createOggetto(oggetto); // 👈 POST /oggetti
+        await createProdotto(oggetto); // 👈 POST /oggetti
+        console.log("createProdotto");
       }
       fetchOggetti();
       setEditingOggetto(null);
@@ -60,6 +61,7 @@ export default function GestioneOggetti() {
       <table className="table table-striped mt-4">
         <thead>
           <tr>
+            <th>Id</th>
             <th>Nome</th>
             <th>Categoria</th>
             <th>Azione</th>
@@ -67,7 +69,8 @@ export default function GestioneOggetti() {
         </thead>
         <tbody>
           {oggetti.map((oggetto) => (
-            <tr key={oggetto.id}>
+            <tr key={oggetto.idProdotto}>
+              <td>{oggetto.idProdotto}</td>
               <td>{oggetto.nome}</td>
               <td>{oggetto.categoria}</td>
               <td>
@@ -79,7 +82,7 @@ export default function GestioneOggetti() {
                 </button>
                 <button
                   className="btn btn-sm btn-danger"
-                  onClick={() => handleDelete(oggetto.id)}
+                  onClick={() => handleDelete(oggetto.idProdotto)}
                 >
                   Elimina
                 </button>

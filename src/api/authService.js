@@ -5,25 +5,25 @@ try {
   const response = await api.post("/utente/login", { email, password });
   
   
-  const token = response.data.token;
+  const success = response.data.success;
   
-  if(token){
-    localStorage.setItem("token","token");
+  if(success){
+    localStorage.setItem("token",response.data.data.token);
     localStorage.setItem("utenteEmail",email);
     return true;
   }else{
-    throw new Error ("Credenziali non valide")
+    throw new Error (response.data.message)
   }
 } catch (error){
   console.error("Errore durante il login: ",error);
   throw new Error(
-    error.response?.data?.message || "Errore durante la connessione al sever"
+    error.response?.data?.message || "Male, male.. qualcosa è andato storto"
   );
 }
 };
 
 export const logout = () => {
-   localStorage.removeItem("token");
+  localStorage.removeItem("token");
   localStorage.removeItem("utenteEmail");
 };
 

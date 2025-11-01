@@ -1,18 +1,30 @@
 import { useState } from "react";
+import { createProdotto } from "../api/apiClient";
 
 export default function AggiungiOggetto({ aggiungi, categorie }) {
   const [nome, setNome] = useState("");
   const [categoria, setCategoria] = useState(categorie[0] || "");
+  const [errore , setErrore] = useState(null);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (nome.trim() !== "") {
-      aggiungi({ nome, categoria });
+    setErrore(null);
+
+    if (nome.trim() === "") return;
+
+    try{
+      const response = await createProdotto({nome,categoria});
+      console.log(response.data.message)
+      aggiungi(response.data.data);
       setNome("");
+    } catch (error){
+      console.error("Error: ",error);
+      throw new Error(error.response?.data?.message)
     }
   };
 
   return (
+    <>
     <form onSubmit={handleSubmit} className="mb-3">
       <div className="input-group">
         <input
@@ -30,5 +42,8 @@ export default function AggiungiOggetto({ aggiungi, categorie }) {
         <button className="btn btn-success" type="submit">Aggiungi</button>
       </div>
     </form>
+    {errore && <div classname="alert alert-danger">{errore}</div>}
+</>
+
   );
 }

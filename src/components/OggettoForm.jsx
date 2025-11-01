@@ -1,21 +1,34 @@
 import { useState, useEffect } from "react";
+import { createProdotto } from "../api/apiClient";
 
 export default function OggettoForm({ onSave, editingOggetto, onCancel }) {
+  const [id, setId] = useState("");
   const [nome, setNome] = useState("");
   const [categoria, setCategoria] = useState("");
 
   useEffect(() => {
     if (editingOggetto) {
+      setId(editingOggetto.idProdotto);
       setNome(editingOggetto.nome);
       setCategoria(editingOggetto.categoria);
     }
   }, [editingOggetto]);
 
-  const handleSubmit = (e) => {
+  
+   const handleSubmit = async (e) => {
     e.preventDefault();
-    onSave({ nome, categoria });
-    setNome("");
-    setCategoria("");
+
+    const prodotto = { nome, categoria };
+
+try{
+ // const response = await createProdotto(prodotto);
+  console.log("OggettoForm -> createProdotto ", prodotto)
+  onSave(prodotto);
+   setNome("");
+      setCategoria("");
+    } catch (error) {
+      console.error("Errore durante il salvataggio del prodotto:", error);
+    }
   };
 
   return (
