@@ -1,0 +1,12 @@
+services:
+  web:
+    container_name: app-casa-fe
+    build: .
+    ports:
+      - "8180:80"
+    networks:
+      - net-app-casa
+
+networks:
+  net-app-casa:
+    external: true
